@@ -65,15 +65,10 @@ public class Robot extends IterativeRobot {
         
     //motorlist
         motorlist = new CANTalon[6];
+        
         for(int i=0; i<=5; i++)
         {
         	motorlist[i] = new CANTalon(i+1);
-        }
-        
-        //enable brake mode for drive motors
-        for(int i=0; i<=3; i++)
-        {
-        	motorlist[i].enableBrakeMode(true);
         }
         
     //joysticks
@@ -122,11 +117,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         leftDrive = joyDrive.getY(Hand.kLeft);
         rightDrive = joyDrive.getY(Hand.kRight);
-        
-        motorlist[0].set(leftDrive);
-        motorlist[1].set(leftDrive);
-        motorlist[2].set(rightDrive);
-        motorlist[3].set(rightDrive);
+
         
     }
     
