@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //additional imports
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
@@ -35,7 +38,6 @@ public class Robot extends IterativeRobot {
     	
     	//motors - note: make sure CAN devices are numbered properly in the web interface (connect roborio and go to 172.22.11.2). 
     	//Start device IDs from 1. Leave 0 free for new devices.
-    	//code refers to device 1 with an index of 0
     	CANTalon[] motorlist;
     		
     	//joysticks

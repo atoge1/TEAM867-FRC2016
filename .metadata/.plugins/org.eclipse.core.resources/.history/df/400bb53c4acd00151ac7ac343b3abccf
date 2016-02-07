@@ -1,21 +1,10 @@
 
-//default imports
-
 package org.usfirst.frc.team867.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
-//additional imports
-
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.Joystick;
-
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,27 +19,6 @@ public class Robot extends IterativeRobot {
     String autoSelected;
     SendableChooser chooser;
 	
-    
-    //global variables
-    	
-    	//motors - note: make sure CAN devices are numbered properly in the web interface (connect roborio and go to 172.22.11.2). 
-    	//Start device IDs from 1. Leave 0 free for new devices.
-    	//code refers to device 1 with an index of 0
-    	CANTalon[] motorlist;
-    		
-    	//joysticks
-    	Joystick joyDrive;
-    	Joystick joyManip;
-    	
-    		//joystick values
-    		double leftDrive;
-    		double rightDrive;
-    	
-    	//compressor
-    
-    	//valves
-    
-    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -60,25 +28,6 @@ public class Robot extends IterativeRobot {
         chooser.addDefault("Default Auto", defaultAuto);
         chooser.addObject("My Auto", customAuto);
         SmartDashboard.putData("Auto choices", chooser);
-    
-        
-        
-    //motorlist
-        motorlist = new CANTalon[6];
-        
-        for(int i=0; i<=5; i++)
-        {
-        	motorlist[i] = new CANTalon(i+1);
-        }
-        
-    //joysticks
-        joyDrive = new Joystick(0);
-        joyManip = new Joystick(1);
-    
-    //compressor
-        
-    //valves
-        
     }
     
 	/**
@@ -115,9 +64,6 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        leftDrive = joyDrive.getY(Hand.kLeft);
-        rightDrive = joyDrive.getY(Hand.kRight);
-
         
     }
     

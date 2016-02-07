@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //additional imports
 
+import java.util.ArrayList;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
@@ -35,9 +36,17 @@ public class Robot extends IterativeRobot {
     	
     	//motors - note: make sure CAN devices are numbered properly in the web interface (connect roborio and go to 172.22.11.2). 
     	//Start device IDs from 1. Leave 0 free for new devices.
-    	//code refers to device 1 with an index of 0
-    	CANTalon[] motorlist;
+    	CANTalon m1;
+    	CANTalon m2;
+    	CANTalon m3;
+    	CANTalon m4;
+    	CANTalon m5;
+    	CANTalon m6;
+    	
+    		//arraylist to store motors
+    		ArrayList motorlist = new ArrayList(6);
     		
+    	
     	//joysticks
     	Joystick joyDrive;
     	Joystick joyManip;
@@ -61,15 +70,15 @@ public class Robot extends IterativeRobot {
         chooser.addObject("My Auto", customAuto);
         SmartDashboard.putData("Auto choices", chooser);
     
+    //motors
+        m1 = new CANTalon(1);
+        m2 = new CANTalon(2);
+        m3 = new CANTalon(3);
+        m4 = new CANTalon(4);
+        m5 = new CANTalon(5);
+        m6 = new CANTalon(6);
         
         
-    //motorlist
-        motorlist = new CANTalon[6];
-        
-        for(int i=0; i<=5; i++)
-        {
-        	motorlist[i] = new CANTalon(i+1);
-        }
         
     //joysticks
         joyDrive = new Joystick(0);
@@ -117,7 +126,12 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         leftDrive = joyDrive.getY(Hand.kLeft);
         rightDrive = joyDrive.getY(Hand.kRight);
-
+        
+        m1
+        m2
+        m3
+        m4
+        
         
     }
     
