@@ -303,3 +303,55 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-07 11:27:58.228
 !MESSAGE [edu.wpi.first.wpilib.plugins.core.wizards.Tag@29333493, edu.wpi.first.wpilib.plugins.core.wizards.Tag@48b193f0, edu.wpi.first.wpilib.plugins.core.wizards.Tag@3202c5a, edu.wpi.first.wpilib.plugins.core.wizards.Tag@3c7ddb2d, edu.wpi.first.wpilib.plugins.core.wizards.Tag@cdae79d, edu.wpi.first.wpilib.plugins.core.wizards.Tag@4830dbe5, edu.wpi.first.wpilib.plugins.core.wizards.Tag@4a707c45, edu.wpi.first.wpilib.plugins.core.wizards.Tag@18067295, edu.wpi.first.wpilib.plugins.core.wizards.Tag@433b9807, edu.wpi.first.wpilib.plugins.core.wizards.Tag@d9a9c76, edu.wpi.first.wpilib.plugins.core.wizards.Tag@44414bd4, edu.wpi.first.wpilib.plugins.core.wizards.Tag@6ff81b13, edu.wpi.first.wpilib.plugins.core.wizards.Tag@701c5d4b, edu.wpi.first.wpilib.plugins.core.wizards.Tag@293c1612, edu.wpi.first.wpilib.plugins.core.wizards.Tag@67edf70a]
+!SESSION 2016-02-07 21:45:33.894 -----------------------------------------------
+eclipse.buildId=4.5.1.M20150904-0015
+java.version=1.8.0_74
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2016-02-07 21:45:58.092
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\atoge'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-07 21:46:04.700
+!MESSAGE Installing tools if necessary
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-07 21:46:04.730
+!MESSAGE Installedtools
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-07 21:46:04.760
+!MESSAGE Installing java if necessary
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-07 21:46:04.784
+!MESSAGE Installedjava
+!SESSION 2016-02-08 07:59:32.932 -----------------------------------------------
+eclipse.buildId=4.5.1.M20150904-0015
+java.version=1.8.0_74
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2016-02-08 07:59:50.857
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\atoge'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-08 07:59:55.649
+!MESSAGE Installing tools if necessary
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-08 07:59:55.693
+!MESSAGE Installedtools
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-08 07:59:55.844
+!MESSAGE Installing java if necessary
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-08 07:59:55.895
+!MESSAGE Installedjava
