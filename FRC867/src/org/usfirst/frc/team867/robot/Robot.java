@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.Compressor;
 
 
 /**
@@ -36,17 +36,19 @@ public class Robot extends IterativeRobot {
     	//motors - note: make sure CAN devices are numbered properly in the web interface (connect roborio and go to 172.22.11.2). 
     	//Start device IDs from 1. Leave 0 free for new devices.
     	//code refers to device 1 with an index of 0
-    	CANTalon[] motorlist;
+    	CANTalon[] motorlist; //stores all motors
     		
-    	//joysticks
-    	Joystick joyDrive;
-    	Joystick joyManip;
+    	//joysticks - note: buttons start at 1
+    	Joystick joyDrive; //driver joystick
+    	Joystick joyManip; //manipulator joystick
     	
     		//joystick values
-    		double leftDrive;
-    		double rightDrive;
-    	
+    		double leftDrive; //stores left joystick y axis value
+    		double rightDrive; //stores right joystick y axis value
+    		
+    				
     	//compressor
+    	Compressor comp;
     
     	//valves
     
@@ -79,8 +81,12 @@ public class Robot extends IterativeRobot {
     //joysticks
         joyDrive = new Joystick(0);
         joyManip = new Joystick(1);
-    
+        
+        
     //compressor
+        comp = new Compressor();
+        //enable
+        comp.start();
         
     //valves
         
@@ -120,13 +126,14 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        leftDrive = joyDrive.getY(Hand.kLeft);
-        rightDrive = joyDrive.getY(Hand.kRight);
+        leftDrive = joyDrive.getY(Hand.kLeft); //point of error
+        rightDrive = joyDrive.getY(Hand.kRight); //point of error
         
         motorlist[0].set(leftDrive);
         motorlist[1].set(leftDrive);
         motorlist[2].set(rightDrive);
         motorlist[3].set(rightDrive);
+        
         
     }
     
@@ -138,3 +145,38 @@ public class Robot extends IterativeRobot {
     }
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

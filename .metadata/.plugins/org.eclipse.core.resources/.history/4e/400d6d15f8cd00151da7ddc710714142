@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package org.usfirst.frc.team867.robot;
+
+/**
+ * @author atoge
+ *
+ */
+public class VoltageRumble {
+
+}
