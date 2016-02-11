@@ -19,7 +19,6 @@ import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Servo;
 
 
 /**
@@ -64,7 +63,7 @@ public class Robot extends IterativeRobot {
     	//controller axes
         final int leftY = 1;
         final int rightY = 5;
-        final int yButton = 5;
+        final int xButton = 5;
         
         
         //state variables
@@ -187,13 +186,13 @@ public class Robot extends IterativeRobot {
             NIVision.IMAQdxStartAcquisition(camSes0);
             NIVision.IMAQdxStartAcquisition(camSes1);
             
-            //to draw a rect, uncomment and modify the line below; also for one more right after image grab ***
+            //to draw a rect, uncomment and modify the line below, and one more right after image grab
             //NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
 
     	}
     	
     	//toggle for cameras
-    	if(joyDrive.getRawButton(yButton))
+    	if(joyDrive.getRawButton(xButton))
     	{
     		useCam0 = !useCam0;
     		Timer.delay(.03);
@@ -202,7 +201,7 @@ public class Robot extends IterativeRobot {
     	//grabs image
 		NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
     	
-		//***uncomment to draw predefined rectangle
+		//uncomment to draw predefined rectangle
 		// NIVision.imaqDrawShapeOnImage(frame, frame, rect,DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
 		
 		

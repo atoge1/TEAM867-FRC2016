@@ -504,3 +504,29 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-11 08:13:23.984
 !MESSAGE [edu.wpi.first.wpilib.plugins.core.wizards.Tag@4e31229f, edu.wpi.first.wpilib.plugins.core.wizards.Tag@6a4940e1, edu.wpi.first.wpilib.plugins.core.wizards.Tag@31330344, edu.wpi.first.wpilib.plugins.core.wizards.Tag@72ab75c, edu.wpi.first.wpilib.plugins.core.wizards.Tag@40c858fc, edu.wpi.first.wpilib.plugins.core.wizards.Tag@60a6564c, edu.wpi.first.wpilib.plugins.core.wizards.Tag@49a6503f, edu.wpi.first.wpilib.plugins.core.wizards.Tag@1be49e00, edu.wpi.first.wpilib.plugins.core.wizards.Tag@19e93a38, edu.wpi.first.wpilib.plugins.core.wizards.Tag@4baf0b7f, edu.wpi.first.wpilib.plugins.core.wizards.Tag@30f39d9d, edu.wpi.first.wpilib.plugins.core.wizards.Tag@f58011d, edu.wpi.first.wpilib.plugins.core.wizards.Tag@5fb0c234, edu.wpi.first.wpilib.plugins.core.wizards.Tag@6cf7de4e, edu.wpi.first.wpilib.plugins.core.wizards.Tag@40c4b938]
+!SESSION 2016-02-11 09:01:18.014 -----------------------------------------------
+eclipse.buildId=4.5.1.M20150904-0015
+java.version=1.8.0_74
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.egit.ui 2 0 2016-02-11 09:01:39.676
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\atoge'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-11 09:01:41.974
+!MESSAGE Installing tools if necessary
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-11 09:01:42.009
+!MESSAGE Installedtools
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-11 09:01:42.060
+!MESSAGE Installing java if necessary
+
+!ENTRY edu.wpi.first.wpilib.plugins.core 1 0 2016-02-11 09:01:42.207
+!MESSAGE Installedjava
