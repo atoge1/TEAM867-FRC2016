@@ -3,4 +3,5 @@
 <fullyQualifiedTypeName name="edu.wpi.first.wpilibj.GenericHID.Hand"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="edu.wpi.first.wpilibj.Joystick.RumbleType"/>
 </qualifiedTypeNameHistroy>

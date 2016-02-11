@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //additional imports
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import edu.wpi.first.wpilibj.Compressor;
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
+import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ShapeMode;
 import edu.wpi.first.wpilibj.CameraServer;
 
 
@@ -54,7 +56,20 @@ public class Robot extends IterativeRobot {
     	//valves
     
     	//camera
-    	CameraServer camser;
+    	int camSes0;
+    	int camSes1;
+    	Image frame;
+    	
+    	//controller axes
+        final int leftY = 1;
+        final int rightY = 5;
+        final int xButton = 5;
+        
+        
+        //state variables
+        boolean firstRun;
+        boolean useCam0;
+        
     	
     /**
      * This function is run when the robot is first started up and should be
@@ -94,9 +109,20 @@ public class Robot extends IterativeRobot {
     //valves
         
     //camera
-        camser= CameraServer.getInstance();
-        camser.setQuality(50);
-    	camser.startAutomaticCapture("cam0");
+        
+        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+        
+        //camSes0
+        camSes0 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        NIVision.IMAQdxConfigureGrab(camSes0);
+        
+        //camSes1
+        camSes1 = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        NIVision.IMAQdxConfigureGrab(camSes1);
+        
+    //state variables
+        firstRun = true;
+        useCam0 = true;
     }
     
 	/**
@@ -125,6 +151,26 @@ public class Robot extends IterativeRobot {
     	case defaultAuto:
     	default:
     	//Put default auto code here
+    		
+    		
+    		//logitech controllers, no rumble.
+    		/*
+        		for(int i = 0; i<5; i++)
+        		{
+        			joyDrive.setRumble(RumbleType.kLeftRumble, i%2 + 1);
+        			joyDrive.setRumble(RumbleType.kRightRumble, i%2);
+        			Timer.delay(.1);
+        		}
+        	
+        		joyDrive.setRumble(RumbleType.kLeftRumble, 0);
+        		joyDrive.setRumble(RumbleType.kRightRumble, 0);
+        		joyManip.setRumble(RumbleType.kLeftRumble, 1);
+        		joyManip.setRumble(RumbleType.kRightRumble, 1);
+        		Timer.delay(.5);
+        		joyDrive.setRumble(RumbleType.kLeftRumble, 0);
+        		joyDrive.setRumble(RumbleType.kRightRumble, 0);
+        	*/
+        	
             break;
     	}
     }
@@ -133,15 +179,52 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        leftDrive = joyDrive.getY(Hand.kLeft); //point of error
-        rightDrive = joyDrive.getY(Hand.kRight); //point of error
+      	
+    	//starts up cameras on first teleop cycle
+    	if(firstRun)
+    	{
+            NIVision.IMAQdxStartAcquisition(camSes0);
+            NIVision.IMAQdxStartAcquisition(camSes1);
+            
+            //to draw a rect, uncomment and modify the line below, and one more right after image grab
+            //NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
+
+    	}
+    	
+    	//toggle for cameras
+    	if(joyDrive.getRawButton(xButton))
+    	{
+    		useCam0 = !useCam0;
+    		Timer.delay(.03);
+    	}
+      	
+    	//grabs image
+		NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
+    	
+		//uncomment to draw predefined rectangle
+		// NIVision.imaqDrawShapeOnImage(frame, frame, rect,DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
+		
+		
+		//sends to camera
+		CameraServer.getInstance().setImage(frame);
+    	
+		//joystick code
+    	leftDrive = joyDrive.getRawAxis(leftY); 
+        rightDrive = joyDrive.getRawAxis(rightY);
         
-        motorlist[0].set(leftDrive);
-        motorlist[1].set(leftDrive);
-        motorlist[2].set(rightDrive);
-        motorlist[3].set(rightDrive);
+        motorlist[0].set(-1 * leftDrive);
+        motorlist[1].set(-1 * leftDrive);
+        motorlist[2].set(-1 * rightDrive);
+        motorlist[3].set(-1 * rightDrive);
         
         
+        
+        firstRun = false;
+        
+        //if necessary for some reason, stop acq code
+        //NIVision.IMAQdxStopAcquisition(camSes0);
+        //NIVision.IMAQdxStopAcquisition(camSes1);
+
     }
     
     /**
@@ -150,38 +233,10 @@ public class Robot extends IterativeRobot {
     public void testPeriodic() {
     	
     	
-    	for(int i = 0; i<5; i++)
-    	{
-    		joyDrive.setRumble(RumbleType.kLeftRumble, i%2 + 1);
-    		joyDrive.setRumble(RumbleType.kRightRumble, i%2);
-    		Timer.delay(.2);
-    	}
     	
-    	joyDrive.setRumble(RumbleType.kLeftRumble, 0);
-    	joyDrive.setRumble(RumbleType.kRightRumble, 0);
-    	joyManip.setRumble(RumbleType.kLeftRumble, 1);
-    	joyManip.setRumble(RumbleType.kRightRumble, 1);
-    	Timer.delay(1);
-    	joyDrive.setRumble(RumbleType.kLeftRumble, 0);
-    	joyDrive.setRumble(RumbleType.kRightRumble, 0);
     	
-    }
-    
+    }   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
