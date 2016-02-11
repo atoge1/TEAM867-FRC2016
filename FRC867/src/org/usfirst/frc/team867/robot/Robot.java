@@ -232,10 +232,16 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    	
-    	
-    	
-    	
+    	joyDrive.setRumble(RumbleType.kLeftRumble, 1);
+    	joyDrive.setRumble(RumbleType.kRightRumble, 1);
+    	Timer.delay(1);
+    	joyDrive.setRumble(RumbleType.kLeftRumble, 0);
+    	joyDrive.setRumble(RumbleType.kRightRumble, 0);
+    	joyManip.setRumble(RumbleType.kLeftRumble, 1);
+    	joyManip.setRumble(RumbleType.kRightRumble, 1);
+    	Timer.delay(1);
+    	joyDrive.setRumble(RumbleType.kLeftRumble, 0);
+    	joyDrive.setRumble(RumbleType.kRightRumble, 0);	
     }   
 }
 
