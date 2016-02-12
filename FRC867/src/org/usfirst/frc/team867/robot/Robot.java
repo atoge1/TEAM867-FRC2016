@@ -16,8 +16,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Compressor;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
+import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
+
+
+
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Servo;
 
@@ -64,7 +68,7 @@ public class Robot extends IterativeRobot {
     	//controller axes
         final int leftY = 1;
         final int rightY = 5;
-        final int yButton = 5;
+        final int yButton = 4;
         
         
         //state variables
@@ -114,13 +118,44 @@ public class Robot extends IterativeRobot {
         frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
         
         //camSes0
-        camSes0 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(camSes0);
+        try 
+        {
+        	camSes0 = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        }
+        catch(VisionException e)
+        {
+        	SmartDashboard.putString("Camera error @ camSes0 open", e.toString());
+        }
+        
+        try 
+        {
+        	NIVision.IMAQdxConfigureGrab(camSes0);
+        }
+        catch(VisionException e)
+        {
+        	SmartDashboard.putString("Camera error @ camSes0 configGrab", e.toString());
+        }
+        
+        
         
         //camSes1
-        camSes1 = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(camSes1);
+        try 
+        {
+        	camSes1 = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        }
+        catch(VisionException e)
+        {
+        	SmartDashboard.putString("Camera error @ camSes1 open", e.toString());
+        }
         
+        try 
+        {
+        	NIVision.IMAQdxConfigureGrab(camSes1);
+        }
+        catch(VisionException e)
+        {
+        	SmartDashboard.putString("Camera error @ camSes1 configGrab", e.toString());
+        }
     //state variables
         firstRun = true;
         useCam0 = true;
@@ -184,8 +219,6 @@ public class Robot extends IterativeRobot {
     	//starts up cameras on first teleop cycle
     	if(firstRun)
     	{
-            NIVision.IMAQdxStartAcquisition(camSes0);
-            NIVision.IMAQdxStartAcquisition(camSes1);
             
             //to draw a rect, uncomment and modify the line below; also for one more right after image grab ***
             //NIVision.Rect rect = new NIVision.Rect(10, 10, 100, 100);
@@ -200,7 +233,68 @@ public class Robot extends IterativeRobot {
     	}
       	
     	//grabs image
-		NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
+    	
+    	if(useCam0)
+    	{
+    		
+    		try
+    		{
+    			NIVision.IMAQdxStopAcquisition(camSes1);
+    		}
+    		catch(VisionException e)
+    		{
+            	SmartDashboard.putString("Camera error @ camSes1 stopAcq", e.toString());
+    		}
+    		
+    		
+    		try
+    		{
+    			NIVision.IMAQdxStartAcquisition(camSes0);
+    		}
+    		catch(VisionException e)
+    		{
+            	SmartDashboard.putString("Camera error @ camSes0 startAcq", e.toString());
+    		}
+    		
+    	}
+    	else
+    	{
+    		
+    		try
+    		{
+    			NIVision.IMAQdxStopAcquisition(camSes0);
+    		}
+    		catch(VisionException e)
+    		{
+            	SmartDashboard.putString("Camera error @ camSes0 stopAcq", e.toString());
+    		}
+    		
+    		
+    		try
+    		{
+    			NIVision.IMAQdxStartAcquisition(camSes1);
+    		}
+    		catch(VisionException e)
+    		{
+            	SmartDashboard.putString("Camera error @ camSes1 startAcq", e.toString());
+    		}
+    	}
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	try
+    	{
+    		NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
+    	}
+    	catch(VisionException e)
+    	{
+        	SmartDashboard.putString("Camera error @ grabImage", e.toString());
+
+    	}
     	
 		//***uncomment to draw predefined rectangle
 		// NIVision.imaqDrawShapeOnImage(frame, frame, rect,DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
@@ -232,36 +326,6 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    	joyDrive.setRumble(RumbleType.kLeftRumble, 1);
-    	joyDrive.setRumble(RumbleType.kRightRumble, 1);
-    	Timer.delay(1);
-    	joyDrive.setRumble(RumbleType.kLeftRumble, 0);
-    	joyDrive.setRumble(RumbleType.kRightRumble, 0);
-    	joyManip.setRumble(RumbleType.kLeftRumble, 1);
-    	joyManip.setRumble(RumbleType.kRightRumble, 1);
-    	Timer.delay(1);
-    	joyDrive.setRumble(RumbleType.kLeftRumble, 0);
-    	joyDrive.setRumble(RumbleType.kRightRumble, 0);	
+  	
     }   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
