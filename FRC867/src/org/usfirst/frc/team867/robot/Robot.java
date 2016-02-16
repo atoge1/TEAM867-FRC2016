@@ -74,6 +74,7 @@ public class Robot extends IterativeRobot {
         //state variables
         boolean firstRun;
         boolean useCam0;
+        boolean toggleCamera; //to check if in the process of toggle (true = can toggle, false = DO NOT TOGGLE YET)
         
     	
     /**
@@ -159,6 +160,7 @@ public class Robot extends IterativeRobot {
     //state variables
         firstRun = true;
         useCam0 = true;
+        toggleCamera = true;
     }
     
 	/**
@@ -226,10 +228,15 @@ public class Robot extends IterativeRobot {
     	}
     	
     	//toggle for cameras
-    	if(joyDrive.getRawButton(yButton))
+    	
+    	if(joyDrive.getRawButton(yButton) && toggleCamera)
     	{
-    		useCam0 = !useCam0;
-    		Timer.delay(.03);
+    		toggleCamera = false; //on first press, disable toggle
+    		useCam0 = !useCam0;	//switch cameras, if button is still held down, it will not toggle anymore, and will not re-enable toggle
+    	}
+    	else if(joyDrive.getRawButton(yButton) == false) //when button is finally released, re-enable toggle
+    	{
+    		toggleCamera = true;
     	}
       	
     	//grabs image
@@ -281,11 +288,6 @@ public class Robot extends IterativeRobot {
     	}
     	
     	
-    	
-    	
-    	
-    	
-    	
     	try
     	{
     		NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
@@ -316,10 +318,7 @@ public class Robot extends IterativeRobot {
         
         firstRun = false;
         
-        //if necessary for some reason, stop acq code
-        //NIVision.IMAQdxStopAcquisition(camSes0);
-        //NIVision.IMAQdxStopAcquisition(camSes1);
-
+       
     }
     
     /**
