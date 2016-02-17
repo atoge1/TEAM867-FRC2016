@@ -69,8 +69,8 @@ public class Robot extends IterativeRobot {
 	Servo pan;
 	Servo tilt;
 
-	double panVal;
-	double tiltVal;
+	double panVal = 70;
+	double tiltVal = 70;
 
 
 	//state variables
