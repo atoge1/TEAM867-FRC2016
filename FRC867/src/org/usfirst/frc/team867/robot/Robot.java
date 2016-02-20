@@ -30,9 +30,9 @@ import edu.wpi.first.wpilibj.Solenoid;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	final String defaultAuto = "Default";
-	final String customAuto = "My Auto";
-	String autoSelected;
+	final String flywheel = "flywheel";
+	final String nautilus = "nautilus";
+	String firemode;
 	SendableChooser chooser;
 
 	//global variables
@@ -114,9 +114,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		chooser = new SendableChooser();
-		chooser.addDefault("Default Auto", defaultAuto);
-		chooser.addObject("My Auto", customAuto);
-		SmartDashboard.putData("Auto choices", chooser);
+		chooser.addDefault("flywheel", flywheel);
+		chooser.addObject("nautilus", nautilus);
+		SmartDashboard.putData("firemode", chooser);
 
 
 
@@ -232,9 +232,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autoSelected = (String) chooser.getSelected();
-		//		autoSelected = SmartDashboard.getString("Auto Selector", defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
+		firemode = (String) chooser.getSelected();
+		System.out.println("firemode: " + firemode);
 	}
 
 	/**
@@ -242,35 +241,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		switch(autoSelected) {
-		case customAuto:
-			//Put custom auto code here   
-			break;
-		case defaultAuto:
-		default:
-			//Put default auto code here
-
-
-			//logitech controllers, no rumble.
-			/*
-        		for(int i = 0; i<5; i++)
-        		{
-        			joyDrive.setRumble(RumbleType.kLeftRumble, i%2 + 1);
-        			joyDrive.setRumble(RumbleType.kRightRumble, i%2);
-        			Timer.delay(.1);
-        		}
-
-        		joyDrive.setRumble(RumbleType.kLeftRumble, 0);
-        		joyDrive.setRumble(RumbleType.kRightRumble, 0);
-        		joyManip.setRumble(RumbleType.kLeftRumble, 1);
-        		joyManip.setRumble(RumbleType.kRightRumble, 1);
-        		Timer.delay(.5);
-        		joyDrive.setRumble(RumbleType.kLeftRumble, 0);
-        		joyDrive.setRumble(RumbleType.kRightRumble, 0);
-			 */
-
-			break;
-		}
+		
 	}
 
 	/**
@@ -387,44 +358,46 @@ public class Robot extends IterativeRobot {
 
 		//nautilus code
 		
-		if(joyDrive.getRawButton(startButton))
+		if(firemode == nautilus)
 		{
-			if(toggleNautilus)
+			if(joyDrive.getRawButton(startButton))
 			{
-				toggleNautilus = false; //on first press, disable toggle
-				nautStart = !nautStart;	//activate Naut, if button is still held down, it will not toggle anymore, and will not re-enable toggle
-			}
-		}
-		else //when button is finally released, re-enable toggle
-		{
-			toggleNautilus = true;
-		}
-		
-		if(nautStart) //first start
-		{
-			motorlist[2].set(-1);
-			
-			if(!nautLimit.get()) //first press of limit
-			{
-				if(!nautTrigPressed) //if first time, set to true
+				if(toggleNautilus)
 				{
-					nautTrigPressed = true;
+					toggleNautilus = false; //on first press, disable toggle
+					nautStart = !nautStart;	//activate Naut, if button is still held down, it will not toggle anymore, and will not re-enable toggle
+				}
+			}
+			else //when button is finally released, re-enable toggle
+			{
+				toggleNautilus = true;
+			}
+		
+			if(nautStart) //first start
+			{
+				motorlist[2].set(-1);
+			
+				if(!nautLimit.get()) //first press of limit
+				{
+					if(!nautTrigPressed) //if first time, set to true
+					{
+						nautTrigPressed = true;
+					}
+				}
+				else
+				{
+					if(nautTrigPressed) //after first time
+					{
+						nautTrigPressed = false; //resets first press
+						nautStart = false; //no longer sending start signal
+					}
 				}
 			}
 			else
 			{
-				if(nautTrigPressed) //after first time
-				{
-					nautTrigPressed = false; //resets first press
-					nautStart = false; //no longer sending start signal
-				}
+				motorlist[2].set(0);
 			}
 		}
-		else
-		{
-			motorlist[2].set(0);
-		}
-		
 		
 		
 		//debug
@@ -516,6 +489,29 @@ public class Robot extends IterativeRobot {
 		flyPush.set(joyDrive.getRawButton(aButton));
 		
 
+		//flywheel code
+		
+		if(joyDrive.getRawButton(leftButton))
+		{
+			motorlist[2].set(1);
+			motorlist[3].set(1);
+		}
+		else if(joyDrive.getRawButton(rightButton))
+		{
+			motorlist[2].set(-1);
+			motorlist[3].set(-1);
+		}
+		else
+		{
+			motorlist[2].set(0);
+			motorlist[3].set(0);
+		}
+		
+		
+		
+		
+		
+		
 
 		//sets to false on first run
 		firstRun = false;
