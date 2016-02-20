@@ -18,6 +18,8 @@ import com.ni.vision.NIVision;
 import com.ni.vision.VisionException;
 import com.ni.vision.NIVision.Image;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
 
 
 /**
@@ -53,6 +55,8 @@ public class Robot extends IterativeRobot {
 	Compressor comp;
 
 	//valves
+	Solenoid flyLift;
+	Solenoid flyPush;
 
 	//camera
 	int camSes0;
@@ -62,7 +66,21 @@ public class Robot extends IterativeRobot {
 	//controller axes
 	final int leftY = 1;
 	final int rightY = 5;
+
+	//controller buttons
 	final int yButton = 4;
+	final int xButton = 3;
+	final int aButton = 1;
+	final int bButton = 2;
+	
+	final int leftButton = 5;
+	final int rightButton = 6;
+	
+	final int leftStickButton = 9;
+	final int rightStickButton = 10;
+	
+	final int backButton = 7;
+	final int startButton = 8;
 
 	//cameraServos
 
@@ -78,7 +96,16 @@ public class Robot extends IterativeRobot {
 	boolean useCam0;
 	boolean toggleCamera; //to check if in the process of toggle (true = can toggle, false = DO NOT TOGGLE YET)
 	boolean justSwitched;
-
+	
+	boolean toggleNautilus;
+	boolean nautStart;
+	boolean nautTrigPressed;
+	
+	boolean toggleLift;
+	boolean toLift;
+	
+	//naut Limit
+	DigitalInput nautLimit;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -117,7 +144,10 @@ public class Robot extends IterativeRobot {
 		comp.start();
 
 		//valves
-
+		
+		flyLift = new Solenoid(0);
+		flyPush = new Solenoid(1);
+		
 		//camera
 
 		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
@@ -142,7 +172,7 @@ public class Robot extends IterativeRobot {
 		}
 
 
-
+		
 		//camSes1
 		try 
 		{
@@ -161,6 +191,7 @@ public class Robot extends IterativeRobot {
 		{
 			SmartDashboard.putString("Camera error @ camSes1 configGrab", e.toString());
 		}
+		
 
 		//cameraServos
 
@@ -176,6 +207,18 @@ public class Robot extends IterativeRobot {
 		useCam0 = true;
 		toggleCamera = true;
 		justSwitched = true;
+		
+		toggleNautilus = true;
+		nautStart = false;
+		nautTrigPressed = false;
+		
+		toggleLift = true;
+		toLift = false;
+		
+		//naut Limit
+		
+		nautLimit = new DigitalInput(9);
+		
 	}
 
 	/**
@@ -247,23 +290,26 @@ public class Robot extends IterativeRobot {
 
 		//toggle for cameras
 
-		if(joyDrive.getRawButton(yButton) && toggleCamera)
+		//uncomment for camera2 toggle
+		
+		/*
+		if(joyDrive.getRawButton(bButton) && toggleCamera)
 		{
 			toggleCamera = false; //on first press, disable toggle
 			useCam0 = !useCam0;	//switch cameras, if button is still held down, it will not toggle anymore, and will not re-enable toggle
 
 			justSwitched = true;
 		}
-		else if(!joyDrive.getRawButton(yButton)) //when button is finally released, re-enable toggle
+		else if(!joyDrive.getRawButton(bButton)) //when button is finally released, re-enable toggle
 		{
 			toggleCamera = true;
 		}
-
+		*/
+		
 		//grabs image
 
-		if(useCam0 && justSwitched)
+/*		if(useCam0 && justSwitched)
 		{
-
 			try
 			{
 				NIVision.IMAQdxStopAcquisition(camSes1);
@@ -272,8 +318,7 @@ public class Robot extends IterativeRobot {
 			{
 				SmartDashboard.putString("Camera error @ camSes1 stopAcq", e.toString());
 			}
-
-
+*/
 			try
 			{
 				NIVision.IMAQdxStartAcquisition(camSes0);
@@ -282,9 +327,8 @@ public class Robot extends IterativeRobot {
 			{
 				SmartDashboard.putString("Camera error @ camSes0 startAcq", e.toString());
 			}
-
+/*
 			justSwitched = false;
-
 		}
 		else if(!useCam0 && justSwitched)
 		{
@@ -311,7 +355,7 @@ public class Robot extends IterativeRobot {
 			justSwitched = false;
 		}
 
-
+*/
 		try
 		{
 			NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
@@ -332,7 +376,7 @@ public class Robot extends IterativeRobot {
 		//joystick code
 		leftDrive = joyDrive.getRawAxis(leftY); 
 		rightDrive = joyDrive.getRawAxis(rightY);
-
+		
 
 		//motor code
 
@@ -341,12 +385,62 @@ public class Robot extends IterativeRobot {
 		motorlist[4].set(1 * rightDrive);
 		motorlist[5].set(1 * rightDrive);
 
+		//nautilus code
+		
+		if(joyDrive.getRawButton(startButton))
+		{
+			if(toggleNautilus)
+			{
+				toggleNautilus = false; //on first press, disable toggle
+				nautStart = !nautStart;	//activate Naut, if button is still held down, it will not toggle anymore, and will not re-enable toggle
+			}
+		}
+		else //when button is finally released, re-enable toggle
+		{
+			toggleNautilus = true;
+		}
+		
+		if(nautStart) //first start
+		{
+			motorlist[2].set(-1);
+			
+			if(!nautLimit.get()) //first press of limit
+			{
+				if(!nautTrigPressed) //if first time, set to true
+				{
+					nautTrigPressed = true;
+				}
+			}
+			else
+			{
+				if(nautTrigPressed) //after first time
+				{
+					nautTrigPressed = false; //resets first press
+					nautStart = false; //no longer sending start signal
+				}
+			}
+		}
+		else
+		{
+			motorlist[2].set(0);
+		}
+		
+		
+		
+		//debug
+		
+		SmartDashboard.putBoolean("start pressed",joyDrive.getRawButton(startButton) );
+		SmartDashboard.putBoolean("nautstart", nautStart);
+		SmartDashboard.putBoolean("nautLimit (true means not pressed)", nautLimit.get());
+		SmartDashboard.putBoolean("nautTrigPressed", nautTrigPressed);
+		
+		
 
 		//servo code
 
 		//default position
 
-		if(joyDrive.getRawButton(7)==true)
+		if(joyDrive.getRawButton(backButton)==true)
 		{
 			panVal=70;
 			tiltVal=70;
@@ -399,7 +493,28 @@ public class Robot extends IterativeRobot {
 			}
 			tilt.setAngle(tiltVal);
 		}
-
+		
+		
+		
+		//Solenoid code
+		
+		
+		if(joyDrive.getRawButton(yButton))
+		{
+			if(toggleLift)
+			{
+				toggleLift = false; //on first press, disable toggle
+				toLift = !toLift;	//activate Naut, if button is still held down, it will not toggle anymore, and will not re-enable toggle
+			}
+		}
+		else //when button is finally released, re-enable toggle
+		{
+			toggleLift = true;
+		}
+		
+		flyLift.set(toLift);
+		flyPush.set(joyDrive.getRawButton(aButton));
+		
 
 
 		//sets to false on first run
