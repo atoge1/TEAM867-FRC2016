@@ -21,6 +21,9 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 
+import org.usfirst.frc.team867.robot.toggleVal;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -60,7 +63,7 @@ public class Robot extends IterativeRobot {
 
 	//camera
 	int camSes0;
-	int camSes1;
+//	int camSes1;
 	Image frame;
 
 	//controller axes
@@ -97,12 +100,12 @@ public class Robot extends IterativeRobot {
 	boolean toggleCamera; //to check if in the process of toggle (true = can toggle, false = DO NOT TOGGLE YET)
 	boolean justSwitched;
 	
-	boolean toggleNautilus;
-	boolean nautStart;
-	boolean nautTrigPressed;
+	boolean nautLimFirst;
 	
-	boolean toggleLift;
-	boolean toLift;
+	toggleVal toggleNaut;
+	toggleVal toggleLift;
+	
+	
 	
 	//naut Limit
 	DigitalInput nautLimit;
@@ -171,7 +174,7 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putString("Camera error @ camSes0 configGrab", e.toString());
 		}
 
-
+/*
 		
 		//camSes1
 		try 
@@ -191,7 +194,7 @@ public class Robot extends IterativeRobot {
 		{
 			SmartDashboard.putString("Camera error @ camSes1 configGrab", e.toString());
 		}
-		
+*/		
 
 		//cameraServos
 
@@ -208,12 +211,10 @@ public class Robot extends IterativeRobot {
 		toggleCamera = true;
 		justSwitched = true;
 		
-		toggleNautilus = true;
-		nautStart = false;
-		nautTrigPressed = false;
+		nautLimFirst = false; //first time has not occured yet
 		
-		toggleLift = true;
-		toLift = false;
+		toggleLift = new toggleVal(false);
+		toggleNaut = new toggleVal(false);
 		
 		//naut Limit
 		
@@ -232,8 +233,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		firemode = (String) chooser.getSelected();
-		System.out.println("firemode: " + firemode);
+		
 	}
 
 	/**
@@ -250,6 +250,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 
+		firemode = (String) chooser.getSelected();
+		System.out.println("firemode: " + firemode);
+		
 		//starts up cameras on first teleop cycle
 		if(firstRun)
 		{
@@ -329,7 +332,8 @@ public class Robot extends IterativeRobot {
 */
 		try
 		{
-			NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
+			//NIVision.IMAQdxGrab(useCam0 ? camSes0 : camSes1, frame, 1);
+			NIVision.IMAQdxGrab(camSes0, frame, 1);
 		}
 		catch(VisionException e)
 		{
@@ -356,59 +360,44 @@ public class Robot extends IterativeRobot {
 		motorlist[4].set(1 * rightDrive);
 		motorlist[5].set(1 * rightDrive);
 
-		//nautilus code
-		
-		if(firemode == nautilus)
+		//nautilus code		
+		if(firemode.equals(nautilus))
 		{
-			if(joyDrive.getRawButton(startButton))
-			{
-				if(toggleNautilus)
-				{
-					toggleNautilus = false; //on first press, disable toggle
-					nautStart = !nautStart;	//activate Naut, if button is still held down, it will not toggle anymore, and will not re-enable toggle
-				}
-			}
-			else //when button is finally released, re-enable toggle
-			{
-				toggleNautilus = true;
-			}
+			toggleNaut.checkForToggle(joyDrive.getRawButton(startButton));
 		
-			if(nautStart) //first start
+			if(toggleNaut.get()) //if started
 			{
 				motorlist[2].set(-1);
-			
-				if(!nautLimit.get()) //first press of limit
+
+				if(!nautLimit.get()) //first press of limit (default state of limit is true, so pressed = false)
 				{
-					if(!nautTrigPressed) //if first time, set to true
+					if(!nautLimFirst) //if first time, set to true
 					{
-						nautTrigPressed = true;
+						nautLimFirst = true;
 					}
 				}
 				else
 				{
-					if(nautTrigPressed) //after first time
+					if(nautLimFirst) //after first time
 					{
-						nautTrigPressed = false; //resets first press
-						nautStart = false; //no longer sending start signal
+						nautLimFirst = false; //resets first press
+						toggleNaut.set(false); //no longer sending start signal
 					}
 				}
+				
 			}
 			else
 			{
 				motorlist[2].set(0);
 			}
+			
+			//debug
+			SmartDashboard.putBoolean("start pressed", joyDrive.getRawButton(startButton) );
+			SmartDashboard.putBoolean("toggleNaut", toggleNaut.get() );
+			SmartDashboard.putBoolean("nautLimit (false = pressed)", nautLimit.get() );
+			SmartDashboard.putBoolean("nautTrigPressed", nautLimFirst);
 		}
 		
-		
-		//debug
-		
-		SmartDashboard.putBoolean("start pressed",joyDrive.getRawButton(startButton) );
-		SmartDashboard.putBoolean("nautstart", nautStart);
-		SmartDashboard.putBoolean("nautLimit (true means not pressed)", nautLimit.get());
-		SmartDashboard.putBoolean("nautTrigPressed", nautTrigPressed);
-		
-		
-
 		//servo code
 
 		//default position
@@ -471,21 +460,9 @@ public class Robot extends IterativeRobot {
 		
 		//Solenoid code
 		
+		toggleLift.checkForToggle(joyDrive.getRawButton(yButton)); //toggles value
+		flyLift.set(toggleLift.get()); //sets based on toggle
 		
-		if(joyDrive.getRawButton(yButton))
-		{
-			if(toggleLift)
-			{
-				toggleLift = false; //on first press, disable toggle
-				toLift = !toLift;	//activate Naut, if button is still held down, it will not toggle anymore, and will not re-enable toggle
-			}
-		}
-		else //when button is finally released, re-enable toggle
-		{
-			toggleLift = true;
-		}
-		
-		flyLift.set(toLift);
 		flyPush.set(joyDrive.getRawButton(aButton));
 		
 
@@ -493,12 +470,12 @@ public class Robot extends IterativeRobot {
 		
 		if(joyDrive.getRawButton(leftButton))
 		{
-			motorlist[2].set(1);
+			motorlist[2].set(-1);
 			motorlist[3].set(1);
 		}
 		else if(joyDrive.getRawButton(rightButton))
 		{
-			motorlist[2].set(-1);
+			motorlist[2].set(1);
 			motorlist[3].set(-1);
 		}
 		else
@@ -507,12 +484,6 @@ public class Robot extends IterativeRobot {
 			motorlist[3].set(0);
 		}
 		
-		
-		
-		
-		
-		
-
 		//sets to false on first run
 		firstRun = false;
 
